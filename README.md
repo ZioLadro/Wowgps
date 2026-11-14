@@ -10,6 +10,14 @@ Scegli una partenza e una destinazione e WowGPS ti propone quattro modi di arriv
 | Navi / zeppelin / tram | terra più trasporti pubblici e portale di Darnassus |
 | Voli | tutto quanto sopra più i punti di volo |
 
+## Anteprima
+
+Illustrazioni del layout con valori d'esempio: non sono screenshot presi in gioco, dove la finestra usa la grafica standard di WoW.
+
+| Percorso calcolato | Suggerimenti mentre scrivi |
+| --- | --- |
+| ![Finestra con le quattro opzioni di viaggio e le tappe](docs/anteprima-percorso.png) | ![Elenco dei suggerimenti sotto il campo Destinazione](docs/anteprima-suggerimenti.png) |
+
 ## Installazione
 
 Copia la cartella `WowGPS` in `World of Warcraft\_forever_\Interface\AddOns\`.
