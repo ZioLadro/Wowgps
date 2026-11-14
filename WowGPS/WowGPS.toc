@@ -1,0 +1,23 @@
+## Interface: 16001
+## Title: WowGPS
+## Notes: Route planner for WoW Forever: pick a start and a destination, compare travel options (foot, mount, boat/zeppelin/tram, flight paths) and follow waypoints. Integrates with Routes and TomTom.
+## Notes-itIT: Navigatore per WoW Forever: scegli partenza e destinazione, confronta le opzioni di viaggio (piedi, cavalcatura, navi/zeppelin/tram, voli) e segui i waypoint. Integrato con Routes e TomTom.
+## Author: ZioLadro
+## Version: 0.1.0
+## SavedVariables: WowGPSDB
+## SavedVariablesPerCharacter: WowGPSCharDB
+## OptionalDeps: Routes, TomTom
+## IconTexture: Interface\Icons\INV_Misc_Map_01
+## AddonCompartmentFunc: WowGPS_OnAddonCompartmentClick
+
+Core.lua
+Locale.lua
+Data.lua
+Maps.lua
+Taxi.lua
+Router.lua
+Places.lua
+Navigation.lua
+RoutesBridge.lua
+UI.lua
+Commands.lua
