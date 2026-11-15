@@ -72,9 +72,38 @@ local itIT = {
     ["  /gps go [1-4]  - start navigation (option number)"] = "  /gps go [1-4]  - avvia la navigazione (numero opzione)",
     ["  /gps stop | next  - stop / skip a step"] = "  /gps stop | next  - ferma / salta una tappa",
     ["  /gps routes | routes clear  - export to Routes / remove"] = "  /gps routes | routes clear  - esporta in Routes / rimuovi",
-    ["  /gps mount 0|60|100  - mount speed"] = "  /gps mount 0|60|100  - velocità cavalcatura",
     ["  /gps mark  - print your position (to fix data)"] = "  /gps mark  - stampa la tua posizione (per correggere i dati)",
     ["Routes: %s"] = "Routes: %s",
+    ["Hearthstone"] = "Pietra del ritorno",
+    ["auto"] = "auto",
+    ["not useful"] = "non conviene",
+    ["Avoid contested zones"] = "Evita le zone contese",
+    ["Follow the road to %s"] = "Segui la strada fino a: %s",
+    ["Use your Hearthstone to %s"] = "Usa la pietra del ritorno per %s",
+    ["No Hearthstone in your bags."] = "Nessuna pietra del ritorno nelle borse.",
+    ["Hearthstone (%s) ready in %s."] = "Pietra del ritorno (%s) pronta tra %s.",
+    ["Hearthstone (%s) does not shorten this trip."] = "La pietra del ritorno (%s) non accorcia questo viaggio.",
+    ["I do not know where your Hearthstone is bound: set it at an innkeeper again, or record the spot with /gps home."] =
+        "Non so dove è fissata la tua pietra del ritorno: impostala di nuovo da un locandiere, oppure registra il punto con /gps home.",
+    ["Crosses contested zones: %s"] = "Attraversa zone contese: %s",
+    ["Crosses enemy territory: %s"] = "Attraversa territorio nemico: %s",
+    ["Recording the road you travel. Type /gps record again to stop."] =
+        "Registro la strada che percorri. Scrivi di nuovo /gps record per fermare.",
+    ["Recording stopped: %d road segment(s) saved."] = "Registrazione fermata: %d tratto/i di strada salvati.",
+    ["Recorded roads removed for %s."] = "Strade registrate rimosse per %s.",
+    ["Avoiding contested zones: on."] = "Evita zone contese: attivo.",
+    ["Avoiding contested zones: off."] = "Evita zone contese: disattivo.",
+    ["Saved place: %s"] = "Luogo salvato: %s",
+    ["Removed place: %s"] = "Luogo rimosso: %s",
+    ["Hearthstone location recorded: %s"] = "Posizione della pietra del ritorno registrata: %s",
+    ["  /gps mount auto|0|60|100  - mount speed"] = "  /gps mount auto|0|60|100  - velocità cavalcatura",
+    ["  /gps avoid  - toggle avoiding contested zones"] = "  /gps avoid  - attiva/disattiva l'evitare le zone contese",
+    ["  /gps save <name> | forget <name>  - save / remove your position as a place"] =
+        "  /gps save <nome> | forget <nome>  - salva / rimuovi la tua posizione come luogo",
+    ["  /gps home  - remember this spot as your Hearthstone location"] =
+        "  /gps home  - ricorda questo punto come posizione della pietra del ritorno",
+    ["  /gps record | record clear  - record the road you travel / forget this zone's"] =
+        "  /gps record | record clear  - registra la strada che percorri / dimentica quelle di questa zona",
 }
 
 function ns:ApplyLocale()

@@ -9,6 +9,7 @@ local Places = {}
 ns.Places = Places
 
 local HERE = { [""] = true, here = true, me = true, qui = true, io = true }
+local HOME = { home = true, hearth = true, hearthstone = true, casa = true, locanda = true }
 local PIN = { pin = true, waypoint = true }
 
 local function trim(s)
@@ -31,12 +32,15 @@ function Places:Catalog()
     if ns.Router:Build() then
         local seen = {}
         for _, n in ipairs(ns.Router.nodes) do
-            if (n.kind == "taxi" or n.kind == "station") and n.place and not seen[n.place]
+            if (n.kind == "taxi" or n.kind == "station" or n.kind == "place") and n.place and not seen[n.place]
                 and (not n.faction or n.faction == ns.faction) then
                 seen[n.place] = true
                 add(n.place, function() return Maps:Point(n.map, n.x, n.y, n.place) end)
             end
         end
+    end
+    for name, sv in pairs(ns.db.saved) do
+        add(name, function() return Maps:Point(sv.map, sv.x, sv.y, name) end)
     end
     if ns.RoutesBridge then
         for _, r in ipairs(ns.RoutesBridge:ListRoutes()) do
@@ -63,6 +67,15 @@ local function match(list, text)
     return prefix or inside
 end
 
+-- Point for a place with exactly this name (case-insensitive), or nil.
+function Places:FindExact(name)
+    if not ns.Maps:Ensure() then return nil end
+    local q = name:lower()
+    for _, e in ipairs(self:Catalog()) do
+        if e.lower == q then return e.make() end
+    end
+end
+
 -- Returns point or nil, errorText.
 function Places:Resolve(text)
     local Maps = ns.Maps
@@ -81,6 +94,18 @@ function Places:Resolve(text)
         if not wp then return nil, L["No map pin set."] end
         local pos = wp.position
         return Maps:Point(wp.uiMapID, pos.x, pos.y, L["Map pin"])
+    end
+
+    if HOME[key] or text == L["Hearthstone"] then
+        local h = ns.Hearth:Get()
+        if h.node then return h.node end
+        if h.reason == "cooldown" then
+            local p = ns.Places:FindExact(h.name)
+            local saved = ns.chardb.bind
+            if saved and saved.name == h.name then p = Maps:Point(saved.map, saved.x, saved.y, h.name) end
+            if p then return p end
+        end
+        return nil, L["I do not know where your Hearthstone is bound: set it at an innkeeper again, or record the spot with /gps home."]
     end
 
     -- Trailing "x y" coordinates (percentages).

@@ -167,6 +167,26 @@ Enum = {
 }
 
 function UnitFactionGroup() return M.faction end
+
+-- Character state the tests can change.
+M.runSpeed, M.mounted = 7, false
+M.bind, M.hearthCount, M.hearthCooldown = nil, 0, 0
+M.pvpInfo = nil
+M.now = 1000
+function GetUnitSpeed() return 0, M.runSpeed, 0, 0 end
+function IsMounted() return M.mounted end
+function UnitOnTaxi() return false end
+function UnitIsDeadOrGhost() return false end
+function GetBindLocation() return M.bind end
+function GetTime() return M.now end
+C_Item = { GetItemCount = function() return M.hearthCount end }
+C_Container = {
+    GetItemCooldown = function()
+        if M.hearthCooldown > 0 then return M.now, M.hearthCooldown, 1 end
+        return 0, 0, 1
+    end,
+}
+C_PvP = { GetZonePVPInfo = function() return M.pvpInfo end }
 function GetLocale() return "enUS" end
 function ReloadUI() end
 

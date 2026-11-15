@@ -5,18 +5,22 @@ local L = ns.L
 local UI = {}
 ns.UI = UI
 
-local WIDTH, HEIGHT = 440, 540
-local MOUNT_CYCLE = { [0] = 60, [60] = 100, [100] = 0 }
+local WIDTH, HEIGHT = 440, 600
+local ROWS = 5
+local MOUNT_CYCLE = { auto = 0, [0] = 60, [60] = 100, [100] = "auto" }
 local KIND_ICON = {
     walk = "Interface\\Icons\\Ability_Rogue_Sprint",
     mount = "Interface\\Icons\\Ability_Mount_RidingHorse",
     transit = "Interface\\Icons\\INV_Misc_Anchor",
     flight = "Interface\\Icons\\Ability_Mount_Gryphon_01",
+    hearth = "Interface\\Icons\\INV_Misc_Rune_01",
 }
 
 local function mountLabel()
     local v = ns.db.mountSpeed
-    return string.format(L["Mount: %s"], v == 0 and L["none"] or ("+" .. v .. "%"))
+    if v == 0 then return string.format(L["Mount: %s"], L["none"]) end
+    if v == 60 or v == 100 then return string.format(L["Mount: %s"], "+" .. v .. "%") end
+    return string.format(L["Mount: %s"], L["auto"] .. " +" .. ns:SpeedPercent(ns:MountSpeed()) .. "%")
 end
 
 local function makeButton(parent, text, w, h)
@@ -135,7 +139,7 @@ function UI:Create()
     local mount = makeButton(f, mountLabel(), 150)
     mount:SetPoint("LEFT", swap, "RIGHT", 6, 0)
     mount:SetScript("OnClick", function(self)
-        ns.db.mountSpeed = MOUNT_CYCLE[ns.db.mountSpeed] or 60
+        ns.db.mountSpeed = MOUNT_CYCLE[ns.db.mountSpeed] or "auto"
         self:SetText(mountLabel())
         if UI.options then UI:Compute() end
     end)
@@ -153,9 +157,21 @@ function UI:Create()
         if UI.options then UI:Compute() end
     end)
 
+    local avoid = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+    avoid:SetSize(24, 24)
+    avoid:SetPoint("TOPLEFT", 224, -148)
+    avoid:SetChecked(ns.db.avoidContested)
+    local avoidText = f:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    avoidText:SetPoint("LEFT", avoid, "RIGHT", 2, 0)
+    avoidText:SetText(L["Avoid contested zones"])
+    avoid:SetScript("OnClick", function(self)
+        ns.db.avoidContested = self:GetChecked() and true or false
+        if UI.options then UI:Compute() end
+    end)
+
     -- Travel options.
     self.optionButtons = {}
-    for i = 1, 4 do
+    for i = 1, ROWS do
         local b = CreateFrame("Button", nil, f)
         b:SetSize(WIDTH - 32, 30)
         b:SetPoint("TOPLEFT", 16, -176 - (i - 1) * 32)
@@ -177,7 +193,7 @@ function UI:Create()
 
     -- Steps.
     local scroll = CreateFrame("ScrollFrame", "WowGPSScroll", f, "UIPanelScrollFrameTemplate")
-    scroll:SetPoint("TOPLEFT", 16, -310)
+    scroll:SetPoint("TOPLEFT", 16, -342)
     scroll:SetPoint("BOTTOMRIGHT", -34, 44)
     local content = CreateFrame("Frame", nil, scroll)
     content:SetSize(WIDTH - 60, 10)
@@ -293,7 +309,7 @@ function UI:Compute(startText, destText)
 end
 
 function UI:ShowMessage(msg)
-    for i = 1, 4 do self.optionButtons[i]:Hide() end
+    for i = 1, ROWS do self.optionButtons[i]:Hide() end
     self.stepsText:SetText("|cffff6060" .. (msg or "?") .. "|r")
     self.stepsContent:SetHeight(self.stepsText:GetStringHeight() + 10)
     self.frame:Show()
@@ -305,7 +321,7 @@ function UI:Refresh()
     self.routesButton:SetEnabled(ns.RoutesBridge:Available())
     if not self.options then return end
 
-    for i = 1, 4 do
+    for i = 1, ROWS do
         local b, opt = self.optionButtons[i], self.options[i]
         if opt then
             b.icon:SetTexture(KIND_ICON[opt.key])
@@ -313,7 +329,7 @@ function UI:Refresh()
             if opt.path then
                 b.info:SetText(ns.FormatTime(opt.path.time) .. "  |cffaaaaaa" .. ns.FormatDist(opt.path.dist) .. "|r")
             else
-                b.info:SetText("|cff808080" .. L["no route"] .. "|r")
+                b.info:SetText("|cff808080" .. (opt.key == "hearth" and L["not useful"] or L["no route"]) .. "|r")
             end
             if i == self.selected then
                 b.bg:SetColorTexture(0.2, 0.6, 1, 0.25)
@@ -328,6 +344,14 @@ function UI:Refresh()
 
     local opt = self:Selected()
     local lines = {}
+    if not (opt and opt.path) then
+        -- Nothing selectable: still explain why (e.g. Hearthstone on cooldown).
+        for _, o in ipairs(self.options) do
+            for _, note in ipairs(o.notes) do
+                if not o.path then lines[#lines + 1] = "|cffffd040" .. o.label .. ": " .. note .. "|r" end
+            end
+        end
+    end
     if opt and opt.path then
         local navPath = ns.Nav.path
         for i, st in ipairs(opt.path.steps) do
@@ -342,6 +366,10 @@ function UI:Refresh()
         lines[#lines + 1] = string.format(L["Total: %s, %s"], ns.FormatTime(opt.path.time), ns.FormatDist(opt.path.dist))
         for _, note in ipairs(opt.notes) do
             lines[#lines + 1] = "|cffffd040" .. note .. "|r"
+        end
+        local h = self.options[ROWS]
+        if h and h ~= opt and not h.path then
+            for _, note in ipairs(h.notes) do lines[#lines + 1] = "|cff909090" .. note .. "|r" end
         end
     end
     self.stepsText:SetText(table.concat(lines, "\n"))

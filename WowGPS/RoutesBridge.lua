@@ -119,13 +119,12 @@ function Bridge:Export(path, destName)
     end
     for _, st in ipairs(path.steps) do
         if st.kind == "walk" then
-            local zone
-            for z in pairs(st.from.zones) do
-                if st.to.zones[z] then zone = z break end
+            local pts = st.points or { st.from, st.to }
+            for i = 1, #pts - 1 do
+                local zone = ns.Router.SharedZone(pts[i], pts[i + 1]) or pts[i + 1].map
+                push(zone, pts[i])
+                push(zone, pts[i + 1])
             end
-            zone = zone or st.to.map
-            push(zone, st.from)
-            push(zone, st.to)
         end
     end
 

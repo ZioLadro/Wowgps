@@ -3,7 +3,7 @@
 ## Notes: Route planner for WoW Forever: pick a start and a destination, compare travel options (foot, mount, boat/zeppelin/tram, flight paths) and follow waypoints. Integrates with Routes and TomTom.
 ## Notes-itIT: Navigatore per WoW Forever: scegli partenza e destinazione, confronta le opzioni di viaggio (piedi, cavalcatura, navi/zeppelin/tram, voli) e segui i waypoint. Integrato con Routes e TomTom.
 ## Author: ZioLadro
-## Version: 0.1.0
+## Version: 0.2.0
 ## SavedVariables: WowGPSDB
 ## SavedVariablesPerCharacter: WowGPSCharDB
 ## OptionalDeps: Routes, TomTom
@@ -13,8 +13,11 @@
 Core.lua
 Locale.lua
 Data.lua
+World.lua
 Maps.lua
+Player.lua
 Taxi.lua
+Landmarks.lua
 Router.lua
 Places.lua
 Navigation.lua
